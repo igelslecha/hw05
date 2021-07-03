@@ -1,55 +1,78 @@
-#Script for Server
-#Install utils for nfs
+#hw05
+**Создаю скрипт для Сервера**
+
+**Устанавливаю nfs**
 yum install nfs-utils -y
-#Switch on installed tools
+
+**Включаю необходимые для работы программы**
 systemctl enable rpcbind
 systemctl enable nfs-server
 systemctl enable nfs-lock
 systemctl enable nfs-idmap
-#And start them
+
+**Стартую их**
 systemctl start rpcbind
 systemctl start nfs-server
 systemctl start nfs-lock
 systemctl start nfs-idmap
-#Make net folder
+
+**Создаю папку шары**
 mkdir -p /var/share
 mkdir -p /var/share/upload
-chmod -R 777 /var/share/upload
-#Add string about net forlder to file /etc/exports 
-echo "/var/share 192.168.50.11(rw,sync,root_squash,all_squash)" >> /etc/exports
-#Reboot server nfs
+chmod -R 777 /var/share/upload **открыл все права 
+
+**Добавляю сведения о сетевой папке в файл** /etc/exports **Убрал подмену на анонимный вход**
+echo "/var/share 192.168.50.11(rw,sync,**root_squash,all_squash**)" >> /etc/exports 
+
+**Перезагружаю сервер nfs, чтобы применить изменения**
 exportfs -r
-#Enable firewall
+
+**Подключаю firewall как требуется в задании**
 systemctl start firewalld
-#Open port for firewall in this VM switch off firewall.
+
+**Открываю необходимые для работы порты**
 firewall-cmd --permanent --zone=public --add-service=nfs
 firewall-cmd --permanent --zone=public --add-service=mountd
 firewall-cmd --permanent --zone=public --add-service=rpc-bind
 firewall-cmd --reload
-#Script for Client
-#Install utils for nfs
+
+
+**Скрипт Клиента**
+**Устанавливаю nfs**
 yum install nfs-utils -y
-#Switch on installed tools
+
+**Включаю необходимые для работы программы**
 systemctl enable rpcbind
 systemctl enable nfs-server
 systemctl enable nfs-lock
 systemctl enable nfs-idmap
-#And start them
+
+**Стартую их**
 systemctl start rpcbind
 systemctl start nfs-server
 systemctl start nfs-lock
 systemctl start nfs-idmap
-#Make folder for our net share
+
+**Создаю папку для нашей сетевой шары**
 mkdir /media/share
-#Mount share
+
+
+**Монтирую шару**
 mount -t nfs 192.168.50.10:/var/share /media/share/
-#Add note to autofs
-#Install autofs
+
+
+**Добавление автомонтирования шары через программу autofs**
+**Установка autofs**
 yum install -y autofs
-#Set autofs
+
+**Настройка параметров для папок nfs (время отмонтирования раздела, в случае отсуствия активности на нём с 60 до 3600)**
 echo "/nfs /etc/auto.nfs --timeout=3600" >> /etc/auto.master
+
+**Запись для автоматического подъёма шары в файл**
 echo "/media/share -rw,soft,intr,rsize=8192,wsize=8192 192.168.50.10:/share" >> /etc/auto.nfs
-#Restart autofs
+
+**Перезапуск autofs для применения изменений**
 /etc/init.d/autofs restart
-#Make file in folder for test 
+
+**Создаю тестовый файл в папке предназначенной для записи** 
 touch /media/share/upload/naprimer.test
