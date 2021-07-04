@@ -6,25 +6,25 @@
 yum install nfs-utils -y
 
 **Включаю необходимые для работы программы**
-
+```
 systemctl enable rpcbind
 systemctl enable nfs-server
 systemctl enable nfs-lock
 systemctl enable nfs-idmap
-
+```
 **Стартую их**
-
+```
 systemctl start rpcbind
 systemctl start nfs-server
 systemctl start nfs-lock
 systemctl start nfs-idmap
-
+```
 **Создаю папку шары**
-
+```
 mkdir -p /var/share
 mkdir -p /var/share/upload
 chmod -R 777 /var/share/upload **открыл все права 
-
+```
 **Добавляю сведения о сетевой папке в файл** /etc/exports **Убрал подмену на анонимный вход**
 
 echo "/var/share 192.168.50.11(rw,sync,**root_squash,all_squash**)" >> /etc/exports 
@@ -38,12 +38,12 @@ exportfs -r
 systemctl start firewalld
 
 **Открываю необходимые для работы порты**
-
+```
 firewall-cmd --permanent --zone=public --add-service=nfs
 firewall-cmd --permanent --zone=public --add-service=mountd
 firewall-cmd --permanent --zone=public --add-service=rpc-bind
 firewall-cmd --reload
-
+```
 
 **Скрипт Клиента**
 **Устанавливаю nfs**
@@ -51,23 +51,22 @@ firewall-cmd --reload
 yum install nfs-utils -y
 
 **Включаю необходимые для работы программы**
-
+```
 systemctl enable rpcbind
 systemctl enable nfs-server
 systemctl enable nfs-lock
 systemctl enable nfs-idmap
-
+```
 **Стартую их**
-
+```
 systemctl start rpcbind
 systemctl start nfs-server
 systemctl start nfs-lock
 systemctl start nfs-idmap
-
+```
 **Создаю папку для нашей сетевой шары**
 
 mkdir /media/share
-
 
 **Монтирую шару**
 
