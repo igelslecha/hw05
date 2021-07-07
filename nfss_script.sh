@@ -21,7 +21,29 @@ echo "/var/share 192.168.50.11(rw,sync,root_squash,all_squash)" >> /etc/exports
 exportfs -r
 #Enable firewall
 systemctl start firewalld
+
+#Make special for us nfs--service for firewall
+touch /etc/firewalld/services/nfs.xml
+echo "<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>NFS
+  <description>NFS service
+  <port protocol="tcp" port="111"/>
+  <port protocol="udp" port="111"/>
+  <port protocol="tcp" port="662"/>
+  <port protocol="udp" port="662"/>
+  <port protocol="tcp" port="892"/>
+  <port protocol="udp" port="892"/>
+  <port protocol="udp" port="2049"/>
+  <port protocol="tcp" port="32803"/>
+  <port protocol="udp" port="32803"/>
+  <port protocol="tcp" port="38467"/>
+  <port protocol="udp" port="38467"/>
+  <port protocol="tcp" port="32769"/>
+  <port protocol="udp" port="32769"/>
+</service>" >> /etc/firewalld/services/nfs.xml
 #Open port for firewall in this VM switch off firewall.
+
 firewall-cmd --permanent --zone=public --add-service=nfs
 firewall-cmd --permanent --zone=public --add-service=mountd
 firewall-cmd --permanent --zone=public --add-service=rpc-bind
