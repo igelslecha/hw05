@@ -111,6 +111,7 @@ mount -t nfs 192.168.50.10:/var/share /media/share/
 #**Перезапуск autofs для применения изменений**
 
 #/etc/init.d/autofs restart
+
 **Добавляю запись о сетевой папке в /etc/fstab версия NFSv3**
 echo "192.168.50.10:/var/share  /media/share/  nfs  defaults,vers=3 0 0" >> /etc/fstab
 
